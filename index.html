@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Chatbot Prototype Demo!</title>
+
+	<!-- this is for mobile screens -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="img/favicon.png">
+
+	<!-- this is for our css files - we have to link our html file to the css files -->
+	<link rel="stylesheet" media="all" href="../component/styles/setup.css">
+	<link rel="stylesheet" media="all" href="../component/styles/says.css">
+	<link rel="stylesheet" media="all" href="../component/styles/reply.css">
+	<link rel="stylesheet" media="all" href="../component/styles/typing.css">
+  <link rel="stylesheet" media="all" href="../component/styles/input.css">
+  <link href="https://fonts.googleapis.com/css?family=Work+Sans:400,600,700&display=swap" rel="stylesheet">
+
+  <!-- css stylesheet for the background of the web page (no need to worry about this) -->
+	<style>
+	body {
+		background: #f9e6ff;
+	}
+	.bubble-container {
+		height: 100vh;
+	}
+	.bubble-container .input-wrap textarea {
+    margin: 0;
+	}
+	</style>
+</head>
+<body>
+
+<!-- header for the chatbot  -->
+<div id="chat">
+  <div class="header">
+    <img src="img/image.jpg" width="40px;">
+    <div>
+      <h1>MenoLife</h1>
+      <p>Helping you find information on the menopause</p>
+    </div>
+  </div>
+</div>
+
+<!-- This is to power the chatbot, you do not need to worry about this area -->
+<script src="../component/js/Bubbles.js"></script>
+<script>
+var chatWindow = new Bubbles(document.getElementById("chat"), "chatWindow", {
+  inputCallbackFn: function(o) {
+
+    // this is for the bot - don't worry
+    var match = function(key) {
+      setTimeout(function() {
+        chatWindow.talk(convo, key) // restart current convo from point found in the answer
+      }, 600)
+    }
+
+    // sanitize text for search function - for the bot
+    var strip = function(text) {
+      return text.toLowerCase().replace(/[\s.,\/#!$%\^&\*;:{}=\-_'"`~()]/g, "")
+    }
+
+    // search function -  for the bot
+    var found = false
+    o.convo[o.standingAnswer].reply.forEach(function(e, i) {
+      strip(e.human_response).includes(strip(o.input)) && o.input.length > 0
+        ? (found = e.bot_answer)
+        : found ? null : (found = false)
+    })
+    found ? match(found) : miss()
+  }
+}) // section for setting up bot is finished.
+
+
+// This is where your conversation is going to happen! Only focus here!
+var convo = {
+
+  // first section
+  intro: {
+    bot_says: ["Hi, I am MenoLife and I am here to help you find out more about the menopause. ", 
+               "<img src=https://media.giphy.com/media/3o6MbavZZaQryNUDiU/giphy.gif />"],
+    human_reply: [
+      {
+        human_response: "Great, where do we start?",
+        bot_answer: "threeareas",
+      },
+      ]
+  },
+  
+  //second section
+
+      "threeareas": {
+    bot_says: ["There are three different areas: General information, health and fitness and alternative approaches. Select the one you want to explore. You can come back to the main menu at any time"],
+    human_reply: [
+    {
+        human_response: "Alternative views and approaches to the menopause",
+        bot_answer: "alternatives"
+
+      },
+      {
+        human_response: "Keeping fit and healthy before, during and after the menopause",
+        bot_answer: "fitness"
+
+      },
+      {
+        human_response: "General information about the menopause",
+        bot_answer: "general"
+      },
+    ]
+  },
+  //third section
+
+      "alternatives": {
+    bot_says: ["Great to see you are interested in alternative approaches! This link might be interesting for you:", "This website talks about how biological transitions that women experience, such as childbirth and menopause, are often medicalized, which means that a natural process is treated as if it were a medical condition requiring intervention.",
+               "<a href=https://www.ourbodiesourselves.org/book-excerpts/health-article/medicalization-of-menopause target=\"_blank\">The medicalisation of menopause</a>"],
+    human_reply: [
+    {
+        human_response: "Show me the last options again",
+        bot_answer: "threeareas"
+      },
+      {
+        human_response: "That is all for now, I will come back later",
+        bot_answer: "finish"
+      },
+       {
+        human_response: "Do you have more information about alternative views?",
+        bot_answer: "more-alternatives"
+      },
+    ]
+  },
+  //fourth section
+
+      "more-alternatives": {
+    bot_says: ["Sure, how about this one:", "This website talks about 10 common myths about menopause and women’s health.",
+               "<a href=https://www.ourbodiesourselves.org/book-excerpts/health-article/ten-myths-about-menopause-and-womens-health-over-40/ target=\"_blank\">Ten Myths about Women’s Health Over 40</a>"],
+    human_reply: [
+    {
+        human_response: "Show me the last options again",
+        bot_answer: "threeareas"
+      },
+      {
+        human_response: "That is all for now, I will come back later",
+        bot_answer: "finish"
+      },
+       {
+        human_response: "Do you have more information about alternative views?",
+        bot_answer: "and-more-alternatives"
+      },
+    ]
+  },
+  //fifth section
+
+      "and-more-alternatives": {
+    bot_says: ["Sure, there is one more for you:", "This website talks about 10 reasons that might make the menopause look like not so bad after all.",
+               "<a href=https://www.everydayhealth.com/menopause-pictures/positives-of-menopause.aspx/ target=\"_blank\">10 Reasons to Look Forward to Menopause</a>"],
+    human_reply: [
+    {
+        human_response: "Show me the last options again",
+        bot_answer: "threeareas"
+      },
+      {
+        human_response: "That is all for now, I will come back later",
+        bot_answer: "finish"
+      },
+    ]
+  },
+  //sixth section
+
+      "finish": {
+    bot_says: ["Hopefully you found some useful information. Please come back if it helped!"],
+    
+  },
+  //seventh section
+
+      "general": {
+    bot_says: ["Good start! Pick any of the following options:"],
+    human_reply: [
+    {
+        human_response: "Go back to the main options",
+        bot_answer: "threeareas"
+      },
+      {
+        human_response: "That is all for now, I will come back later",
+        bot_answer: "finish"
+      },
+      {
+        human_response: "Show me websites with general information",
+        bot_answer: "general-websites-one"
+      },
+      {
+        human_response: "Is aging the only cause for the menopause?",
+        bot_answer: "aging-one"
+      },
+      {
+        human_response: "What stages of the menopause are there?",
+        bot_answer: "stages"
+      },
+      
+    ]
+  },
+  //eight section
+
+      "general-websites-one": {
+    bot_says: ["How about having a look at this website?", "It is from the National Institute on Aging and gives a good overview", 
+               "<a href=https://www.nia.nih.gov/health/what-menopause target=\"_blank\">What is Menopause</a>"],
+    human_reply: [
+    {
+        human_response: "Go back to the main options",
+        bot_answer: "threeareas"
+      },
+      {
+        human_response: "That is all for now, I will come back later",
+        bot_answer: "finish"
+      },
+      {
+        human_response: "Do you have another website with general information",
+        bot_answer: "general-websites-two"
+      },
+    ]
+  },
+  //ninth section
+
+      "general-websites-two": {
+    bot_says: ["How about this one?", "It is from the UK National Health Service and also gives a good overview", 
+               "<a href=https://www.nhs.uk/conditions/menopause/ target=\"_blank\">Menopause Overview</a>"],
+    human_reply: [
+    {
+        human_response: "Go back to the main options",
+        bot_answer: "threeareas"
+      },
+      {
+        human_response: "That is all for now, I will come back later",
+        bot_answer: "finish"
+      },
+    ]
+  },
+  //tenth section
+
+      "stages": {
+    bot_says: ["There are 3 stages: perimenopause, menopause and postmenopause"],
+    human_reply: [
+    {
+        human_response: "Go back to the main options",
+        bot_answer: "threeareas"
+      },
+      {
+        human_response: "That is all for now, I will come back later",
+        bot_answer: "finish"
+      },
+      {
+        human_response: "Tell me more about the perimenopausal stage",
+        bot_answer: "peri-stages"
+      },
+      {
+        human_response: "Tell me more about the menopausal stage",
+        bot_answer: "menopause-main"
+      },
+      {
+        human_response: "Tell me more about the postmenopausal stage",
+        bot_answer: "post-one"
+      },
+    ]
+  },
+  //eleventh section
+
+      "peri-stages": {
+    bot_says: ["It might be a good idea to remember that every woman is different while reading the information you find here.",
+              "The Mayo clinic reminds us that women start perimenopause at different ages. Some signs of progression toward menopause are menstrual irregularity, sometime in one's 40s. But some women notice changes as early as their mid-30s.",
+              "If you want to read more on the symptoms of the perimenopause you find the link below",
+              "<a href=https://www.mayoclinic.org/diseases-conditions/perimenopause/symptoms-causes/syc-20354666 target=\"_blank\">Perimenopause Overview from the Mayo Clinic</a>"],
+    human_reply: [
+    {
+        human_response: "Show me the last options again",
+        bot_answer: "stages"
+      },
+      {
+        human_response: "That is all for now, I will come back later",
+        bot_answer: "finish"
+      },
+      {
+        human_response: "Do you have more information about the perimenopausal stage?",
+        bot_answer: "more-stages"
+      },
+    ]
+  },
+  //twelth section
+
+      "more-stages": {
+    bot_says: ["This page also points out that there is no 'on size fits all' when it comes to the menopause. ",
+              "This website includes some information about PMS and menstrual cycle changes which can affect women during perimenopause.",
+              "If you want to read this information please use the link below",
+              "<a href=https://www.ourbodiesourselves.org/book-excerpts/health-article/what-to-expect-perimenopause/ target=\"_blank\">What to expect in the perimenopause</a>"],
+    human_reply: [
+    {
+        human_response: "Show me the last options again",
+        bot_answer: "stages"
+      },
+      {
+        human_response: "That is all for now, I will come back later",
+        bot_answer: "finish"
+      },
+    ]
+  },
+  //thirteens section
+
+      "menopause-main": {
+    bot_says: ["You can find a lot of information in the 'General information' section but there is also this quiz that might be useful.",
+               "The quiz contains 10 questions and answers which debunk some myths around the menopause.",
+              "<a href=https://www.ourbodiesourselves.org/book-excerpts/health-article/test-your-menopause-knowledge/ target=\"_blank\">Test Your Menopause Knowledge</a>"],
+    human_reply: [
+    {
+        human_response: "Show me the last options again",
+        bot_answer: "stages"
+      },
+      {
+        human_response: "That is all for now, I will come back later",
+        bot_answer: "finish"
+      },
+      {
+        human_response: "Show me the section with the general information on the menopause",
+        bot_answer: "general-websites-one"
+      },
+    ]
+  },
+  //fourteens section
+
+      "post-one": {
+    bot_says: ["It is good to remember that any condition that you read about might occur but does not have to, so keep an open mind while reading the information.",
+               "This website provides information about possible health conditions such as osteoporosis (thinning of your bones), cardiovascular disease, mental health conditions and vaginal health.",
+              "<a href=https://www.healthline.com/health/menopause/postmenopausal-health target=\"_blank\">Health conditions postmenopause</a>"],
+    human_reply: [
+    {
+        human_response: "Show me the last options again",
+        bot_answer: "stages"
+      },
+      {
+        human_response: "That is all for now, I will come back later",
+        bot_answer: "finish"
+      },
+      {
+        human_response: "Do you have any other information about the postmenopausal stage?",
+        bot_answer: "post-two"
+      },
+    ]
+  },
+  //fifthteens section
+
+      "post-two": {
+    bot_says: ["This is a commercial website, so please do not buy anything based on our link to this page!",
+               "This website provides information about symptoms that can occur during postmenopause such as insomnia, weight gain and incontinence.",
+              "<a href=https://www.healthspan.co.uk/advice/when-am-i-postmenopausal-signs-and-symptoms-of-postmenopause target=\"_blank\">When am I postmenopausal</a>"],
+    human_reply: [
+    {
+        human_response: "Show me the last options again",
+        bot_answer: "stages"
+      },
+      {
+        human_response: "That is all for now, I will come back later",
+        bot_answer: "finish"
+      }
+    ]
+  },
+  //sixteens section
+
+      "aging-one": {
+    bot_says: ["No, the menopause can start for a variety of reasons!",
+              "The menopause can start due to being induced by medical procedures or treatments. Another cause can be Primary Ovarian Insufficiency",
+              "If you want to read more on this, please refer to the link below",
+              "<a href=https://www.endocrineweb.com/conditions/menopause/menopause-causes target=\"_blank\">Aging is not the only cause of the menopause</a>"],
+    human_reply: [
+    {
+        human_response: "Show me the last options again",
+        bot_answer: "stages"
+      },
+      {
+        human_response: "That is all for now, I will come back later",
+        bot_answer: "finish"
+      },
+      {
+        human_response: "Do you have more information about reasons for the menopause?",
+        bot_answer: "aging-two"
+      },
+    ]
+      },
+  //seventeens section
+
+      "aging-two": {
+    bot_says: ["The menopause can start earlier for some women than others.",
+              "Early menopause usually refers to onset before age 45. Premature menopause or premature ovarian insufficiency occurs before age 40",
+              "The website below cites varies factors that can contribute to this such as lifestyle factors, genetics, chromosome defects, autoimmune diseases, or epilepsy",
+              "<a href=https://www.healthline.com/health/menopause/causes-early target=\"_blank\">What causes early menopause</a>"],
+    human_reply: [
+    {
+        human_response: "Show me the last options again",
+        bot_answer: "general"
+      },
+      {
+        human_response: "That is all for now, I will come back later",
+        bot_answer: "finish"
+      },
+    ]
+      },
+  //eighteens section
+
+      "fitness": {
+    bot_says: ["Good choice! Fitness and exercise are always a good thing.",
+              "Here is some advice on fitness from the Mayo clinic.  Because women lose muscle mass later in life any exercise that strengthens the body is good.",
+              "The website talks about the benefits of exercise as well as what exercise types are best. Go and check it out!",
+              "<a href=https://www.mayoclinic.org/healthy-lifestyle/womens-health/in-depth/fitness-tips-for-menopause/art-20044602 target=\"_blank\">Fitness tips for menopause</a>"],
+    human_reply: [
+    {
+        human_response: "Show me the last options again",
+        bot_answer: "general"
+      },
+      {
+        human_response: "That is all for now, I will come back later",
+        bot_answer: "finish"
+      },
+      {
+        human_response: "Do you have any information about weight gain which I heard becomes a problem when the menopause starts?",
+        bot_answer: "fitness-two"
+      },
+    ]
+      },
+  //nineteens section
+
+      "fitness-two": {
+    bot_says: ["Sure thing, I can help with that.",
+              "Here is some advice on losing weight which talks about why cardio exercise is important and how to go about it. Also, why strength training matters and how to do it properly.",
+              "The website talks about Metabolic Conditioning and Circuit Training and also how to stay fit mentally. Go and check it out!",
+              "<a href=https://www.verywellfit.com/how-to-lose-weight-with-exercise-during-menopause-1230892 target=\"_blank\">How to Lose Weight with Exercise During Menopause</a>"],
+    human_reply: [
+    {
+        human_response: "Show me the last options again",
+        bot_answer: "general"
+      },
+      {
+        human_response: "That is all for now, I will come back later",
+        bot_answer: "finish"
+      },
+      {
+        human_response: "Can you point out any particular exercises that could be good to do?",
+        bot_answer: "fitness-three"
+      },
+    ]
+      },
+  //nineteens section
+
+      "fitness-three": {
+    bot_says: ["Exercise comes in many different forms. Besides cardio and strenght training there is also yoga, meditation or dancing if that is more your thing",
+              "Then again, perhaps zumba makes your body move or even house or garden work?",
+              "Have a look at this website, it has some suggestions on different kinds of exercise.",
+              "<a href=https://www.healthline.com/health/ten-best-menopause-activitiestarget=\"_blank\">10 great ways to get physical during menopause</a>"],
+    human_reply: [
+    {
+        human_response: "Show me the last options again",
+        bot_answer: "general"
+      },
+      {
+        human_response: "That is all for now, I will come back later",
+        bot_answer: "finish"
+      },
+    ]
+      },
+  //make sure you always keep this as this closes line 76!!!!!!
+}
+ //make sure you always keep this as this closes line 76!!!!!!
+
+//Do not worry about this!
+chatWindow.talk(convo)
+</script>
+</body>
+</html>
